@@ -1,0 +1,77 @@
+=== Conversación con LLM para diseño de pruebas unitarias ===
+
+Objetivo:
+Diseñar pruebas unitarias con JUnit para la clase File según la especificación dada.
+
+Especificación analizada:
+- content debe iniciar vacío pero no null.
+- addProperty(char[] newcontent)
+   * agrega contenido
+   * null -> InvalidContentException
+   * type IMAGE -> WrongFileTypeException
+- getCRC32()
+   * vacío -> 0
+   * con contenido -> usar FileUtils.calculateCRC32()
+
+------------------------------------------------------------
+
+PROMPT:
+"Genera pruebas unitarias JUnit para la clase File que validen addProperty y getCRC32."
+
+RESPUESTA DEL LLM (resumen):
+Se identificaron los siguientes casos de prueba:
+
+Casos correctos:
+1) addProperty agrega contenido correctamente
+2) múltiples llamadas concatenan contenido
+3) getCRC32 vacío devuelve 0
+
+Casos de error:
+4) newcontent null -> InvalidContentException
+5) tipo IMAGE -> WrongFileTypeException
+
+Casos adicionales:
+6) simular cálculo de CRC usando FileUtils.setCRC()
+
+------------------------------------------------------------
+
+DECISIONES DE DISEÑO:
+
+- Se utiliza JUnit 5 (Jupiter)
+- Se emplea assertThrows para excepciones
+- Se valida tamaño de content con assertEquals
+- FileUtils actúa como stub (no calcula CRC real)
+- Solo se prueba comportamiento de la clase File
+
+------------------------------------------------------------
+
+PRUEBAS IMPLEMENTADAS:
+
+@Test addPropertyAgregaContenido()
+Verifica que el contenido se agregue correctamente.
+
+@Test addPropertyConcatenaContenido()
+Verifica que múltiples inserciones se acumulen.
+
+@Test addPropertyNullLanzaExcepcion()
+Verifica excepción InvalidContentException.
+
+@Test addPropertyTipoImageLanzaExcepcion()
+Verifica excepción WrongFileTypeException.
+
+@Test crcVacioDevuelveCero()
+Verifica retorno 0 cuando content está vacío.
+
+@Test crcUsaFileUtils()
+Simula CRC usando stub FileUtils.
+
+------------------------------------------------------------
+
+Conclusión:
+Las pruebas cubren:
+- caminos normales
+- validaciones
+- manejo de errores
+- comportamiento límite
+
+Todas las pruebas pasan correctamente con Maven (BUILD SUCCESS).
